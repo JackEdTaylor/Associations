@@ -1,7 +1,7 @@
 library(tidyverse)
 
 # import data
-swow <- read_tsv("03_strength.SWOW-EN.R123.tsv")
+swow <- read_tsv("00_strength.SWOW-EN.R123.tsv")
 
 # function to calculate positive pointwise mutual information (PPMI)
 calc_ppmi <- function(this_rc, all_rc, n_cues = length(unique(swow$cue))) {
@@ -62,4 +62,4 @@ calc_ppmi_cr(c("sill", "old", "sea"), c("window", "age", "blood"))
 swow <- swow %>%
   mutate(ppmi = calc_ppmi_cr(cue, response, .))
 
-write_csv(swow, "swow_ppmi.csv")
+write_csv(swow, "01_swow_ppmi.csv")
