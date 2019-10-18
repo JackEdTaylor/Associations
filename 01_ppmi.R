@@ -62,4 +62,4 @@ calc_ppmi_cr(c("sill", "old", "sea"), c("window", "age", "blood"))
 swow <- swow %>%
   mutate(ppmi = calc_ppmi_cr(cue, response, .))
 
-write_csv(swow, "01_swow_ppmi.csv")
+write_csv(swow, "00_swow_edited.csv")
