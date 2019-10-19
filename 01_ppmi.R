@@ -29,7 +29,7 @@ calc_ppmi_cr <- function(c, r, df = swow) {
     if (n_combs > 1000) {
       perc_done <- (i / n_combs) * 100
       print_every_x_perc <- 1
-      if (round(perc_done) %% print_every_x_perc == 0) {
+      if (perc_done %% print_every_x_perc == 0) {
         cat(sprintf("%i/%i (%i%%)\n", i, n_combs, round(perc_done)))
       }
     }
