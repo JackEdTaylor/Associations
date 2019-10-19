@@ -1,4 +1,5 @@
 library(tidyverse)
+library(plotly)
 
 # import data
 swow <- read_tsv("00_strength.SWOW-EN.R123.tsv")
@@ -28,8 +29,8 @@ calc_ppmi_cr <- function(c, r, df = swow) {
     # priont progress every x% if more than 1000 calculations
     if (n_combs > 1000) {
       perc_done <- (i / n_combs) * 100
-      print_every_x_perc <- 0.5
-      if (perc_done %% print_every_x_perc == 0) {
+      print_every_x_perc <- 1
+      if (round(perc_done) %% print_every_x_perc == 0) {
         cat(sprintf("%i/%i (%i%%)\n", i, n_combs, round(perc_done)))
       }
     }
@@ -63,3 +64,11 @@ swow <- swow %>%
   mutate(ppmi = calc_ppmi_cr(cue, response, .))
 
 write_csv(swow, "00_swow_edited.csv")
+
+source("theme_black.R", local=T)
+
+swow %>%
+  ggplot(aes(x = R123.Strength, y = ppmi)) +
+  geom_bin2d(bins = 1000) +
+  scale_fill_continuous(type = "viridis", trans = "log2") +
+  theme_black()
