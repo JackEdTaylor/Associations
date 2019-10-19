@@ -1,5 +1,4 @@
 library(tidyverse)
-library(plotly)
 
 # import data
 swow <- read_tsv("00_strength.SWOW-EN.R123.tsv")
