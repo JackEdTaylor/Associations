@@ -23,15 +23,29 @@ calc_ppmi_cr <- function(c, r, df = swow) {
     unique() %>%
     length()
   
-  lapply(1:n_combs, function(i) {
-    
-    # priont progress every x% if more than 1000 calculations
-    if (n_combs > 1000) {
+  print_perc_vals <- seq(0, 100, by = 1)
+  
+  print_iters <- if (n_combs > 1000) {
+    lapply(1:n_combs, function(i) {
       perc_done <- (i / n_combs) * 100
-      print_every_x_perc <- 1
-      if (perc_done %% print_every_x_perc == 0) {
-        cat(sprintf("%i/%i (%i%%)\n", i, n_combs, round(perc_done)))
+      if (round(perc_done) %in% print_perc_vals) {
+        print_perc_vals <<- print_perc_vals[print_perc_vals != round(perc_done)]
+        i
+      } else {
+        NULL
       }
+    })
+  } else {
+    c()
+  }
+  
+  print_iters <- unlist(print_iters)
+    
+  lapply(1:n_combs, function(i) {
+    # priont progress every x% if more than 1000 calculations
+    if (i %in% print_iters) {
+      perc_done <- round(i / n_combs * 100, 2)
+      cat(sprintf("%i/%i (%i%%)\n", i, n_combs, round(perc_done)))
     }
     
     c_i <- c[[i]]
@@ -47,8 +61,7 @@ calc_ppmi_cr <- function(c, r, df = swow) {
     
     calc_ppmi(this_rc, all_rc, n_cues)
     
-  }) %>%
-    unlist()
+  })
   
 }
 
