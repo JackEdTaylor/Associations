@@ -73,7 +73,8 @@ calc_ppmi_cr(c("sill", "old", "sea"), c("window", "age", "blood"))
 
 # calculate ppmi for all words
 swow <- swow %>%
-  mutate(ppmi = calc_ppmi_cr(cue, response, .))
+  mutate(ppmi = calc_ppmi_cr(cue, response, .)) %>%
+  mutate(norm_ppmi = ppmi / sum(ppmi))
 
 write_csv(swow, "00_swow_edited.csv")
 
