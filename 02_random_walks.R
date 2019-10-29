@@ -11,7 +11,7 @@ build_network <- function(cue_node, n_walks = 5, alpha = .95, .swow = swow, asso
   
   # if cues_only is TRUE, responses are removed if they are never used as a cue
   # setting cues_only to FALSE will cause walks to terminate at non-cue responses, such that all subsequent steps in that walk will return NA
-  if (cues_only) .swow <- filter(.swow, response %in% cue)
+  if (cues_only) .swow <- dplyr::filter(.swow, response %in% cue)
   
   # alpha = probability at any step on a walk taking another step
   cat(sprintf("Calculating walk lengths for alpha of %s...", alpha))
