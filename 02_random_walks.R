@@ -3,9 +3,9 @@ library(tidyverse)
 # import data
 swow <- read_csv("00_swow_edited.csv")
 
-build_network <- function(cue_node, n_walks = 5, alpha = .95, .swow = swow, assoc_weight = "ppmi", cues_only = TRUE) {
+build_network <- function(cue_node, n_walks = 5, alpha = .95, .swow = swow, assoc_weight = "norm_ppmi", cues_only = TRUE) {
   
-  # NOTE: assoc_weight should be the column that reflects association strength (i.e. "ppmi" or "R123.Strength")
+  # NOTE: assoc_weight should be the column that reflects association strength (i.e. "ppmi", "norm_ppmi", or "R123.Strength")
   
   library(purrr)
   
