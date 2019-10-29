@@ -87,7 +87,7 @@ tidy_walks <- function(walks, .swow = swow) {
     unlist() %>%
     unique()
   # check there is only one cue
-  if (length(cue) > 1) stop("Multiple cues detected")
+  if (length(cue_node) > 1) stop("Multiple cues detected")
   # get the cue to each step (step cue)
   step_cues <- lapply(walks, function(w) w[1:length(w)-1] )
   # remove the cues from the walks
