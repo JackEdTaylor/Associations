@@ -3,9 +3,11 @@ library(tidyverse)
 # import data
 swow <- read_csv("00_swow_edited.csv")
 
-build_network <- function(cue_node, n_walks = 5, alpha = .95, .swow = swow, assoc_weight = "norm_ppmi", cues_only = TRUE) {
+take_walks <- function(cue_node, n_walks = 5, alpha = .95, .swow = swow, assoc_weight = "norm_ppmi", direction = "forwards", cues_only = TRUE) {
   
   # NOTE: assoc_weight should be the column that reflects association strength (i.e. "ppmi", "norm_ppmi", or "R123.Strength")
+  
+  # if direction is "forwards", cue to response, if "backwards", response to cue
   
   library(purrr)
   
@@ -52,8 +54,4 @@ build_network <- function(cue_node, n_walks = 5, alpha = .95, .swow = swow, asso
   
 }
 
-library(tictoc)
-
-tic("100 steps")
-build_network("bridge", n_walks = 100)
-toc()
+take_walks("cake", n_walks = 100)
