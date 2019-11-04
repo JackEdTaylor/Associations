@@ -12,6 +12,10 @@ calc_cos <- function(a, b) {
 # function to calculate associative strength
 calc_assoc_str <- function(cues, .swow = swow) {
   
+  if (identical(cues[[1]], cues[[2]])) {
+    if (cues[[1]] %in% .swow$cue) return(1) else return(NA)
+  }
+  
   cues_neighbours <- .swow %>%
     dplyr::filter(cue %in% cues) %>%
     dplyr::mutate(cue = dplyr::case_when(
@@ -32,3 +36,5 @@ calc_assoc_str(c("jungle", "leopard"))
 calc_assoc_str(c("jungle", "cat"))
 
 calc_assoc_str(c("cat", "leopard"))
+
+calc_assoc_str(c("cat", "cat"))
