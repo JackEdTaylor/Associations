@@ -50,6 +50,6 @@ assoc_str(c("cat", "cat", "cat"), c("cat", "teacher", "jungle"), print = TRUE)
 swow_cues <- expand.grid(unique(swow$cue), unique(swow$cue)) %>%
   magrittr::set_colnames(c("cue_a", "cue_b")) %>%
   dplyr::arrange(cue_a, cue_b) %>%
-  dplyr::mutate(cos_R123 = assoc_str(cue_a, cue_b, print = TRUE))
+  dplyr::mutate(cos_R123 = assoc_str(cue_a, cue_b))
 
 write_csv(swow_cues, "00_cos.csv")
