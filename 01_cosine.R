@@ -10,31 +10,46 @@ calc_cos <- function(a, b) {
 }
 
 # function to calculate associative strength
-calc_assoc_str <- function(cues, .swow = swow) {
+assoc_str <- function(cues_a, cues_b, .swow = swow, print = FALSE) {
   
-  if (identical(cues[[1]], cues[[2]])) {
-    if (cues[[1]] %in% .swow$cue) return(1) else return(NA)
-  }
+  if (length(cues_a) != length(cues_b)) stop("Inconsistent vector lengths")
   
-  cues_neighbours <- .swow %>%
-    dplyr::filter(cue %in% cues) %>%
-    dplyr::mutate(cue = dplyr::case_when(
-      cue == cues[[1]] ~ "cue_a",
-      cue == cues[[2]] ~ "cue_b"
-    )) %>%
-    select(cue, response, R123.Strength) %>%
-    tidyr::pivot_wider(names_from = cue, values_from = R123.Strength, names_prefix = "p_") %>%
-    #dplyr::filter(!is.na(p_cue_a), !is.na(p_cue_b))
-    tidyr::replace_na(list(p_cue_a = 0, p_cue_b = 0))
-  
-  calc_cos(cues_neighbours$p_cue_a, cues_neighbours$p_cue_b)
-  
+  sapply(1:length(cues_a), function(i) {
+    cues_a_i <- as.character(cues_a[[i]])
+    cues_b_i <- as.character(cues_b[[i]])
+    
+    if (identical(cues_a_i, cues_b_i)) {
+      cos_i <- if (cues_a_i %in% .swow$cue) 1 else NA
+    } else {
+      cues_neighbours <- .swow %>%
+        dplyr::filter(cue %in% c(cues_a_i, cues_b_i)) %>%
+        dplyr::mutate(cue = dplyr::case_when(
+          cue == cues_a_i ~ "cue_a",
+          cue == cues_b_i ~ "cue_b"
+        )) %>%
+        select(cue, response, R123.Strength) %>%
+        tidyr::pivot_wider(names_from = cue, values_from = R123.Strength, names_prefix = "p_") %>%
+        #dplyr::filter(!is.na(p_cue_a), !is.na(p_cue_b))
+        tidyr::replace_na(list(p_cue_a = 0, p_cue_b = 0))
+      
+      cos_i <- calc_cos(cues_neighbours$p_cue_a, cues_neighbours$p_cue_b)
+    }
+    
+    if (print) cat(sprintf("\"%s\" ~ \"%s\" = %s\n", cues_a_i, cues_b_i, cos_i))
+    
+    cos_i
+  })
 }
 
-calc_assoc_str(c("jungle", "leopard"))
+assoc_str("jungle", "leopard")
+assoc_str("jungle", "cat")
+assoc_str("cat", "leopard", print = TRUE)
+assoc_str("cat", "cat")
+assoc_str(c("cat", "cat", "cat"), c("cat", "teacher", "jungle"), print = TRUE)
 
-calc_assoc_str(c("jungle", "cat"))
+swow_cues <- expand.grid(unique(swow$cue), unique(swow$cue)) %>%
+  magrittr::set_colnames(c("cue_a", "cue_b")) %>%
+  dplyr::arrange(cue_a, cue_b) %>%
+  dplyr::mutate(cos_R123 = assoc_str(cue_a, cue_b, print = TRUE))
 
-calc_assoc_str(c("cat", "leopard"))
-
-calc_assoc_str(c("cat", "cat"))
+write_csv(swow_cues, "00_cos.csv")
