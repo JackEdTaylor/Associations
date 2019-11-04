@@ -112,7 +112,14 @@ tidy_walks <- function(walks, .swow = swow) {
   walks_df
 }
 
+cos.sim <- function(ix) {
+  A = X[ix[1],]
+  B = X[ix[2],]
+  return( sum(A*B)/sqrt(sum(A^2)*sum(B^2)) )
+}  
+
 cake_walks <- take_walks("cake", n_walks = 10) %>%
   tidy_walks()
 
-
+food_walks <- take_walks("cake", n_walks = 10) %>%
+  tidy_walks()
