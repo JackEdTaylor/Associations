@@ -14,7 +14,24 @@ assoc_str <- function(cues_a, cues_b, .swow = swow, print = FALSE) {
   
   if (length(cues_a) != length(cues_b)) stop("Inconsistent vector lengths")
   
+  print_perc_vals <- seq(0, 100, by = 0.1)
+  
+  print_iters <- if (print) {
+    lapply(1:length(cues_a), function(i) {
+      perc_done <- (i / length(cues_a)) * 100
+      if (round(perc_done, 1) %in% print_perc_vals) {
+        print_perc_vals <<- print_perc_vals[print_perc_vals != round(perc_done, 1)]
+        i
+      } else {
+        NULL
+      }
+    })
+  } else {
+    c()
+  }
+  
   sapply(1:length(cues_a), function(i) {
+    
     cues_a_i <- as.character(cues_a[[i]])
     cues_b_i <- as.character(cues_b[[i]])
     
@@ -35,7 +52,10 @@ assoc_str <- function(cues_a, cues_b, .swow = swow, print = FALSE) {
       cos_i <- calc_cos(cues_neighbours$p_cue_a, cues_neighbours$p_cue_b)
     }
     
-    if (print) cat(sprintf("\"%s\" ~ \"%s\" = %s\n", cues_a_i, cues_b_i, cos_i))
+    if (print & i %in% print_iters) {
+      perc_done <- i / length(cues_a) * 100
+      cat(sprintf("%i/%i (%.1f%%), \"%s\" ~ \"%s\" = %s\n", i, length(cues_a), round(perc_done, 1), cues_a_i, cues_b_i, cos_i))
+    }
     
     cos_i
   })
@@ -50,6 +70,6 @@ assoc_str(c("cat", "cat", "cat"), c("cat", "teacher", "jungle"), print = TRUE)
 swow_cues <- expand.grid(unique(swow$cue), unique(swow$cue)) %>%
   magrittr::set_colnames(c("cue_a", "cue_b")) %>%
   dplyr::arrange(cue_a, cue_b) %>%
-  dplyr::mutate(cos_R123 = assoc_str(cue_a, cue_b))
+  dplyr::mutate(cos_R123 = assoc_str(cue_a, cue_b, print = TRUE))
 
 write_csv(swow_cues, "00_cos.csv")
